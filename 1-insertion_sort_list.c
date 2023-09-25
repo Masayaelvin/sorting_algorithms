@@ -1,66 +1,33 @@
 #include "sort.h"
-
 /**
- * insertion_sort_list - function that sorts
- * a doubly linked list of integers in ascending
- * order using the Insertion sort algorithm
- * @list: list
- */
+* insertion_sort_list - insertion sorting algorithm
+* @list: linked list to sort
+*/
 void insertion_sort_list(listint_t **list)
 {
-	listint_t *head = NULL;
+	listint_t *tmp;
+	int n;
 
-	if (!list || !(*list))
+	if (!list)
 		return;
-
-	head = *list; /*first node of the list*/
-	while (head && head->next)
+	tmp = *list;
+	while (tmp)
 	{
-		if (head->n > head->next->n) /*comparison of values*/
+		while (tmp)
 		{
-			_swap(&head, list);
-			print_list(*list);
-
-			while (head && head->prev)
+			if (tmp->next)
 			{
-				if (head->n < head->prev->n)
+				if (tmp->n > tmp->next->n)
 				{
-					head = head->prev;
-					_swap(&(head), list);
+					n = tmp->n;
+					*(int *)&tmp->n = tmp->next->n;
+					*(int *)&tmp->next->n = n;
+					tmp = *list;
 					print_list(*list);
-					head = head->next;
+					break;
 				}
-				head = head->prev;
 			}
+			tmp = tmp->next;
 		}
-		head = head->next;
 	}
-}
-
-/**
- * _swap - exchange elements
- * @list: list
- * @node: node of list
- */
-void _swap(listint_t **node, listint_t **list)
-{
-	listint_t *aux = *node, *aux2, *aux3;
-
-	if (!(*node)->prev)
-		*list = (*node)->next;
-
-	aux2 = aux->next;
-	aux->next = aux2->next;
-	aux3 = aux->prev;
-	aux->prev = aux2;
-	aux2->next = aux;
-	aux2->prev = aux3;
-
-	if (aux2->prev)
-		aux2->prev->next = aux2;
-
-	if (aux->next)
-		aux->next->prev = aux;
-
-	*node = aux2;
 }

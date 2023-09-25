@@ -1,81 +1,69 @@
+
 #include "sort.h"
 
 /**
- * change_nodes - exchanges the values of two elements of type integer
- * @array: array
- * @a: integer
- * @b: integer
- * @size: size of the array
+ * partition - array partition
+ * @array: array to sort
+ * @first: first position
+ * @last: last position
+ * @size: array size
+ * Return: int pivot index
  */
-void change_nodes(int *array, int a, int b, size_t size)
+int partition(int *array, int first, int last, size_t size)
 {
-	int temp;
+	int i = first - 1, aux, j;
 
-	if (array[a] != array[b])
+	for (j = first; j <= last - 1; j++)
 	{
-		temp = array[a];
-		array[a] = array[b];
-		array[b] = temp;
-		print_array(array, size);
-	}
-}
-
-/**
- * divide_array - array partitioning
- * @array: array
- * @left: integer
- * @right: integer
- * @size: size of the array
- * Return: int
- */
-int divide_array(int *array, int left, int right, size_t size)
-{
-	int i = left, j, pivot = array[right];
-
-	for (j = left; j <= right; j++)
-	{
-		if (array[j] < pivot)
+		if (array[j] < array[last])
 		{
-			change_nodes(array, i, j, size);
 			i++;
+			if (i < j)
+			{
+				aux = array[i];
+				array[i] = array[j];
+				array[j] = aux;
+				print_array(array, size);
+			}
 		}
 	}
-	change_nodes(array, i, right, size);
-
-	return (i);
-}
-
-/**
- * quicksort_recursion - function that sorts
- * an array of integers using recursion
- * @array: array
- * @left: integer
- * @right: integer
- * @size: size of the array
- */
-void quicksort_recursion(int *array, int left, int right, size_t size)
-{
-	int partition;
-
-	if (left > right)
+	if (array[i + 1] > array[last])
 	{
-		return;
+		aux = array[i + 1];
+		array[i + 1] = array[last];
+		array[last] = aux;
+		print_array(array, size);
 	}
-	partition = divide_array(array, left, right, size);
-	quicksort_recursion(array, left, partition - 1, size);
-	quicksort_recursion(array, partition + 1, right, size);
+
+	return (i + 1);
 }
 
 /**
- * quick_sort - function that sorts
- * an array of integers in ascending
- * order using the Quick sort algorithm
- * @array: array
- * @size: size of the array
+ * qs - sorts an array of integers recursively
+ * @array: array to sort
+ * @first: first position
+ * @last: last position
+ * @size: array size
+ */
+void qs(int *array, int first, int last, size_t size)
+{
+	int pivot;
+
+	if (first < last)
+	{
+		pivot = partition(array, first, last, size);
+		qs(array, first, pivot - 1, size);
+		qs(array, pivot + 1, last, size);
+	}
+}
+
+/**
+ * quick_sort - sorts an array of integers using the Quick
+ * sort algorithm in ascending order
+ * @array: array to sort
+ * @size: array size
  */
 void quick_sort(int *array, size_t size)
 {
-	if (size < 2)
-		return;
-	quicksort_recursion(array, 0, size - 1, size);
+	qs(array, 0, size - 1, size);
 }
